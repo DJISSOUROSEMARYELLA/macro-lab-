@@ -1,0 +1,121 @@
+/* Leaflet Map Customizations, Halos & Animated Markers */
+
+.leaflet-container {
+  font-family: var(--g-font-family) !important;
+  background-color: #dbe4eb !important;
+}
+
+/* Remove default leaflet controls we don't want */
+.leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.7) !important;
+  font-size: 10px !important;
+  border-top-left-radius: 4px;
+}
+
+/* Custom Marker Styling */
+.macro-event-marker {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid #1a73e8;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.macro-event-marker:hover {
+  transform: scale(1.25);
+  z-index: 1000 !important;
+}
+
+.macro-event-marker .marker-icon {
+  font-size: 16px;
+  color: #1a73e8;
+}
+
+.macro-event-marker.trade { border-color: #34a853; }
+.macro-event-marker.trade .marker-icon { color: #34a853; }
+
+.macro-event-marker.central-bank { border-color: #1a73e8; }
+.macro-event-marker.central-bank .marker-icon { color: #1a73e8; }
+
+.macro-event-marker.inflation { border-color: #f9ab00; }
+.macro-event-marker.inflation .marker-icon { color: #f9ab00; }
+
+.macro-event-marker.commodity { border-color: #e37400; }
+.macro-event-marker.commodity .marker-icon { color: #e37400; }
+
+.macro-event-marker.debt { border-color: #ea4335; }
+.macro-event-marker.debt .marker-icon { color: #ea4335; }
+
+/* Pulsing Radar Ring */
+.macro-event-marker::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  opacity: 0.8;
+  animation: pulseRadar 2.2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+  pointer-events: none;
+}
+
+@keyframes pulseRadar {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  70% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+/* GeoJSON Country Layer Styles */
+.country-polygon {
+  transition: fill-opacity 0.2s ease, stroke 0.2s ease, stroke-width 0.2s ease;
+  cursor: pointer;
+}
+
+.country-polygon:hover {
+  fill-opacity: 0.75 !important;
+  stroke: #202124 !important;
+  stroke-width: 2px !important;
+}
+
+.country-polygon.highlighted {
+  fill: #fbbc04 !important;
+  fill-opacity: 0.85 !important;
+  stroke: #ea8600 !important;
+  stroke-width: 3px !important;
+  filter: drop-shadow(0 0 8px rgba(249, 171, 0, 0.6));
+}
+
+.country-polygon.dimmed {
+  fill-opacity: 0.1 !important;
+  stroke-opacity: 0.2 !important;
+}
+
+/* Leaflet Custom Tooltip Overrides */
+.leaflet-tooltip-macro {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.leaflet-tooltip-macro::before {
+  display: none !important;
+}

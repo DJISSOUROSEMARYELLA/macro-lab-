@@ -1,0 +1,244 @@
+/* Google Design System Tokens & Base Reset */
+:root {
+  --g-font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --g-mono-family: 'Roboto Mono', monospace;
+  
+  /* Google Palette */
+  --g-blue: #1a73e8;
+  --g-blue-light: #e8f0fe;
+  --g-blue-hover: #1765cc;
+  --g-green: #34a853;
+  --g-green-light: #e6f4ea;
+  --g-yellow: #f9ab00;
+  --g-yellow-light: #fef7e0;
+  --g-red: #ea4335;
+  --g-red-light: #fce8e6;
+  
+  /* Neutral Greys (Clean Google Light Theme) */
+  --g-surface: rgba(255, 255, 255, 0.92);
+  --g-surface-elevated: rgba(255, 255, 255, 0.98);
+  --g-surface-glass: rgba(255, 255, 255, 0.82);
+  --g-border: rgba(218, 220, 224, 0.8);
+  --g-border-subtle: #f1f3f4;
+  --g-text-primary: #202124;
+  --g-text-secondary: #5f6368;
+  --g-text-tertiary: #80868b;
+  --g-map-bg: #e5e9ec;
+  
+  /* Elevations & Shadows */
+  --g-shadow-sm: 0 1px 3px rgba(60, 64, 67, 0.12), 0 1px 2px rgba(60, 64, 67, 0.14);
+  --g-shadow-md: 0 4px 12px rgba(60, 64, 67, 0.15), 0 1px 3px rgba(60, 64, 67, 0.08);
+  --g-shadow-lg: 0 12px 28px rgba(60, 64, 67, 0.20), 0 4px 10px rgba(60, 64, 67, 0.10);
+  --g-shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
+  
+  /* Glass Blur */
+  --g-blur: blur(16px);
+  --g-radius-sm: 8px;
+  --g-radius-md: 16px;
+  --g-radius-lg: 24px;
+  --g-radius-pill: 9999px;
+  
+  --header-height: 56px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--g-font-family);
+  background-color: var(--g-map-bg);
+  color: var(--g-text-primary);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Material Icons Google Outlined */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  vertical-align: middle;
+}
+
+/* App Root Container */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+}
+
+/* 1. Header (Google Weather Lab Style) */
+.macro-header {
+  height: var(--header-height);
+  background: var(--g-surface-glass);
+  backdrop-filter: var(--g-blur);
+  -webkit-backdrop-filter: var(--g-blur);
+  border-bottom: 1px solid var(--g-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 1000;
+  position: relative;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #1a73e8, #4285f4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 2px 6px rgba(26, 115, 232, 0.35);
+}
+
+.logo-title {
+  font-size: 19px;
+  font-weight: 500;
+  color: var(--g-text-primary);
+  letter-spacing: -0.2px;
+}
+
+.status-badge {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 3px 9px;
+  border-radius: var(--g-radius-pill);
+  background: #f1f3f4;
+  color: var(--g-text-secondary);
+  border: 1px solid #dadce0;
+}
+
+.header-center {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.global-ticker {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--g-text-secondary);
+}
+
+.ticker-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ticker-item strong {
+  color: var(--g-text-primary);
+  font-weight: 500;
+}
+
+.ticker-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: white;
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-radius-pill);
+  padding: 4px 12px;
+  font-size: 12px;
+  box-shadow: var(--g-shadow-sm);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.coord-display {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: white;
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-radius-pill);
+  padding: 5px 14px;
+  font-size: 12px;
+  font-family: var(--g-mono-family);
+  color: var(--g-text-secondary);
+  box-shadow: var(--g-shadow-sm);
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  color: var(--g-text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.icon-btn:hover {
+  background: rgba(60, 64, 67, 0.08);
+  color: var(--g-text-primary);
+}
+
+.icon-btn.active {
+  background: var(--g-blue-light);
+  color: var(--g-blue);
+}
+
+/* Map Container */
+.map-viewport {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  height: calc(100vh - var(--header-height));
+  background-color: #dbe4eb;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+  background: #dbe4eb;
+}
+
+/* Common Frosted Glass Card */
+.glass-panel {
+  background: var(--g-surface-glass);
+  backdrop-filter: var(--g-blur);
+  -webkit-backdrop-filter: var(--g-blur);
+  border: 1px solid var(--g-border);
+  box-shadow: var(--g-shadow-md);
+  border-radius: var(--g-radius-md);
+}

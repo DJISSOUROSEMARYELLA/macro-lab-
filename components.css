@@ -1,0 +1,861 @@
+/* Components: Controls, Tooltips, Drawers, AI Chat Bar, Legend */
+
+/* 2. Floating Controls Panel (Top Left Google Weather Style) */
+.controls-panel {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  width: 320px;
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+  z-index: 900;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+}
+
+.controls-panel.collapsed {
+  transform: translateX(-340px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.controls-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--g-border-subtle);
+}
+
+.controls-title {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.controls-body {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.control-section-title {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--g-text-tertiary);
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.toggle-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+
+.toggle-label {
+  font-size: 14px;
+  color: var(--g-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* iOS / Google Style Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #dadce0;
+  transition: .25s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .25s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+}
+
+input:checked + .slider {
+  background-color: var(--g-blue);
+}
+
+input:checked + .slider:before {
+  transform: translateX(18px);
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 28px;
+}
+
+.radio-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--g-text-secondary);
+  cursor: pointer;
+}
+
+.radio-item input[type="radio"] {
+  accent-color: var(--g-blue);
+  cursor: pointer;
+}
+
+/* 3. Floating Quick Tools on Map (Right Side) */
+.map-quick-tools {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 900;
+}
+
+.quick-tool-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: white;
+  border: 1px solid var(--g-border);
+  box-shadow: var(--g-shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--g-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.quick-tool-btn:hover {
+  background: #f8f9fa;
+  color: var(--g-blue);
+  transform: translateY(-1px);
+  box-shadow: var(--g-shadow-lg);
+}
+
+.quick-tool-btn .badge-counter {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: var(--g-red);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+}
+
+/* 4. Hover Tooltips (Google Weather Lab Card Style) */
+.macro-hover-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: var(--g-shadow-lg);
+  border: 1px solid var(--g-border);
+  min-width: 240px;
+  max-width: 320px;
+  pointer-events: none;
+  font-family: var(--g-font-family);
+}
+
+.card-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--g-border-subtle);
+}
+
+.country-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.flag-emoji {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.country-card-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--g-text-primary);
+}
+
+.card-tier-tag {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 12px;
+  margin-top: 6px;
+}
+
+.card-metric {
+  display: flex;
+  flex-direction: column;
+}
+
+.metric-label {
+  font-size: 11px;
+  color: var(--g-text-tertiary);
+}
+
+.metric-val {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--g-text-primary);
+}
+
+.metric-val.green { color: var(--g-green); }
+.metric-val.red { color: var(--g-red); }
+
+.card-footer-hint {
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--g-text-tertiary);
+  text-align: center;
+  font-style: italic;
+}
+
+/* Event Hover Popup */
+.event-hover-card {
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: var(--g-shadow-lg);
+  border: 1px solid var(--g-border);
+  min-width: 270px;
+}
+
+.event-hover-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--g-text-primary);
+}
+
+.event-hover-cat {
+  font-size: 11px;
+  color: var(--g-text-secondary);
+  margin-bottom: 8px;
+}
+
+.event-hover-time {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--g-text-primary);
+  margin-bottom: 8px;
+}
+
+.event-stats-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  padding: 4px 0;
+  border-top: 1px solid var(--g-border-subtle);
+}
+
+/* 5. Country Intelligence Drawer (Right Side) */
+.country-drawer {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 440px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  z-index: 950;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+  padding-bottom: 20px;
+}
+
+.country-drawer.hidden {
+  transform: translateX(480px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.drawer-header {
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--g-border-subtle);
+  position: sticky;
+  top: 0;
+  background: var(--g-surface-glass);
+  backdrop-filter: var(--g-blur);
+  z-index: 10;
+}
+
+.drawer-title-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.country-main-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.drawer-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rating-chip {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+.rating-chip.prime { background: #e6f4ea; color: #137333; }
+.rating-chip.high-grade { background: #e8f0fe; color: #1a73e8; }
+.rating-chip.lower-medium { background: #fef7e0; color: #b06000; }
+.rating-chip.speculative { background: #feefe3; color: #c5221f; }
+.rating-chip.default-risk { background: #fce8e6; color: #c5221f; }
+
+.drawer-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 6 Macro Financial Depth Tiles */
+.depth-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.depth-tile {
+  background: white;
+  border: 1px solid var(--g-border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.depth-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--g-shadow-sm);
+}
+
+.tile-label {
+  font-size: 11px;
+  color: var(--g-text-secondary);
+}
+
+.tile-val {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--g-text-primary);
+}
+
+/* World Bank 5-Core Matrix */
+.matrix-section {
+  background: white;
+  border: 1px solid var(--g-border);
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.matrix-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--g-text-primary);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.matrix-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.matrix-row:last-child {
+  margin-bottom: 0;
+}
+
+.matrix-row-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.matrix-bar-track {
+  height: 6px;
+  background: #f1f3f4;
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.matrix-bar-fill {
+  height: 100%;
+  background: var(--g-blue);
+  border-radius: 3px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.matrix-benchmark-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #202124;
+  z-index: 2;
+}
+
+/* Flagship Project Box */
+.project-box {
+  background: #f8f9fa;
+  border: 1px solid var(--g-border);
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.project-title {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--g-text-primary);
+}
+
+.project-progress-bar {
+  height: 8px;
+  background: #e8eaed;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 8px 0 4px 0;
+}
+
+.project-progress-fill {
+  height: 100%;
+  background: var(--g-green);
+  border-radius: 4px;
+}
+
+/* AI Synthesis Card */
+.ai-synthesis-card {
+  background: linear-gradient(145deg, #f8fafd, #f1f6fd);
+  border: 1px solid #d2e3fc;
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ai-card-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--g-blue);
+}
+
+.ai-card-body {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--g-text-primary);
+}
+
+.ask-country-ai-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  padding: 8px 14px;
+  background: white;
+  border: 1px solid var(--g-blue);
+  color: var(--g-blue);
+  border-radius: var(--g-radius-pill);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: all 0.15s ease;
+}
+
+.ask-country-ai-btn:hover {
+  background: var(--g-blue);
+  color: white;
+  box-shadow: var(--g-shadow-sm);
+}
+
+/* 6. Events Drawer (Radar Drawer) */
+.events-drawer {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 420px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  z-index: 950;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+}
+
+.events-drawer.hidden {
+  transform: translateX(450px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.event-card-item {
+  background: white;
+  border: 1px solid var(--g-border);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.event-card-item:hover {
+  border-color: var(--g-blue);
+  transform: translateY(-2px);
+  box-shadow: var(--g-shadow-md);
+}
+
+.event-card-item.active {
+  border-color: var(--g-blue);
+  background: #f8fafd;
+}
+
+.event-item-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.event-item-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--g-text-primary);
+}
+
+.event-item-sub {
+  font-size: 12px;
+  color: var(--g-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.event-actual-box {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+/* 7. Bottom AI Chat & Command Bar (Google Glass Aesthetic) */
+.bottom-ai-wrapper {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 780px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  z-index: 920;
+}
+
+.ai-suggestions-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.suggestion-chip {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(218, 220, 224, 0.9);
+  padding: 6px 14px;
+  border-radius: var(--g-radius-pill);
+  font-size: 12px;
+  color: var(--g-text-primary);
+  cursor: pointer;
+  box-shadow: var(--g-shadow-sm);
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.suggestion-chip:hover {
+  background: white;
+  border-color: var(--g-blue);
+  color: var(--g-blue);
+  transform: translateY(-1px);
+  box-shadow: var(--g-shadow-md);
+}
+
+.ai-input-bar {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--g-border);
+  box-shadow: var(--g-shadow-lg);
+  border-radius: var(--g-radius-pill);
+  display: flex;
+  align-items: center;
+  padding: 6px 8px 6px 18px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ai-input-bar:focus-within, .ai-input-bar.highlighted {
+  border-color: var(--g-blue);
+  box-shadow: 0 8px 30px rgba(26, 115, 232, 0.25);
+  background: #ffffff;
+}
+
+/* Context Entity Pill Tag Inside Input */
+.context-tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--g-blue-light);
+  color: var(--g-blue);
+  border: 1px solid rgba(26, 115, 232, 0.3);
+  padding: 4px 10px;
+  border-radius: var(--g-radius-pill);
+  font-size: 12px;
+  font-weight: 500;
+  margin-right: 8px;
+  animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.context-tag-remove {
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+
+.ai-text-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: var(--g-font-family);
+  font-size: 14px;
+  color: var(--g-text-primary);
+  padding: 8px 0;
+}
+
+.ai-text-input::placeholder {
+  color: var(--g-text-tertiary);
+}
+
+.ai-send-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--g-blue);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ai-send-btn:hover {
+  background: var(--g-blue-hover);
+  transform: scale(1.04);
+}
+
+/* AI Response Modal Overlay / Drawer */
+.ai-response-sheet {
+  position: absolute;
+  bottom: 84px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 780px;
+  max-height: 380px;
+  overflow-y: auto;
+  z-index: 930;
+  padding: 20px 24px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ai-response-sheet.hidden {
+  opacity: 0;
+  transform: translateX(-50%) translateY(20px);
+  pointer-events: none;
+}
+
+.ai-response-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--g-border-subtle);
+}
+
+.ai-response-body {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--g-text-primary);
+}
+
+/* 8. Retractable Legend (Bottom Right Google Weather Style) */
+.retractable-legend {
+  position: absolute;
+  bottom: 24px;
+  right: 16px;
+  z-index: 910;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.legend-compact-view {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  background: white;
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-radius-pill);
+  box-shadow: var(--g-shadow-md);
+  cursor: pointer;
+}
+
+.legend-expanded-view {
+  width: 260px;
+  padding: 16px;
+  background: var(--g-surface-glass);
+  backdrop-filter: var(--g-blur);
+  border: 1px solid var(--g-border);
+  border-radius: 16px;
+  box-shadow: var(--g-shadow-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.legend-title {
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.income-tier-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tier-legend-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+}
+
+.tier-dot-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tier-color-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}

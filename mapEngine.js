@@ -1,0 +1,201 @@
+// Map Engine: Leaflet Initializer, Choropleth Polygons, Hover Tooltips & Interactions
+class MapEngine {
+  constructor() {
+    this.map = null;
+    this.countryGeoLayer = null;
+    this.activeMetric = 'income'; // 'income', 'gdpGrowth', 'inflation', 'debt'
+    this.selectedIso3 = null;
+    this.highlightedIso3List = [];
+  }
+
+  init() {
+    // Flat light CartoDB Positron / Google style tiles
+    this.map = L.map('map', {
+      center: [20, 10],
+      zoom: 3,
+      minZoom: 2,
+      maxZoom: 10,
+      zoomControl: false,
+      attributionControl: true
+    });
+
+    // Clean Google Light styled basemap
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a> | Macro Lab',
+      subdomains: 'abcd',
+      maxZoom: 19
+    }).addTo(this.map);
+
+    // Track mouse coordinates for the header pill
+    this.map.on('mousemove', (e) => {
+      const coordEl = document.getElementById('cursor-coords');
+      if (coordEl) {
+        coordEl.textContent = `${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`;
+      }
+    });
+
+    this.renderCountryLayer();
+  }
+
+  renderCountryLayer() {
+    if (this.countryGeoLayer) {
+      this.map.removeLayer(this.countryGeoLayer);
+    }
+
+    this.countryGeoLayer = L.geoJSON(window.GEOJSON_WORLD, {
+      style: (feature) => this.getCountryStyle(feature.properties.iso_a3),
+      onEachFeature: (feature, layer) => {
+        const iso3 = feature.properties.iso_a3;
+        const country = window.COUNTRIES_DATA[iso3];
+
+        if (country) {
+          // Hover Card Tooltip
+          const tooltipContent = this.createHoverTooltipHtml(country);
+          layer.bindTooltip(tooltipContent, {
+            sticky: true,
+            className: 'leaflet-tooltip-macro',
+            direction: 'auto',
+            offset: [15, 0]
+          });
+
+          layer.on({
+            mouseover: (e) => {
+              const target = e.target;
+              if (!this.highlightedIso3List.length || this.highlightedIso3List.includes(iso3)) {
+                target.setStyle({
+                  fillOpacity: 0.85,
+                  weight: 2.5,
+                  color: '#202124'
+                });
+              }
+            },
+            mouseout: (e) => {
+              this.countryGeoLayer.resetStyle(e.target);
+              if (this.highlightedIso3List.length > 0) {
+                this.applyFilterHighlight(this.highlightedIso3List);
+              }
+            },
+            click: () => {
+              window.UIController.openCountryDrawer(iso3);
+            }
+          });
+        }
+      }
+    }).addTo(this.map);
+  }
+
+  getCountryStyle(iso3) {
+    const country = window.COUNTRIES_DATA[iso3];
+    let fillColor = '#d0d7de';
+    let fillOpacity = 0.55;
+
+    if (country) {
+      if (this.activeMetric === 'income') {
+        const tier = window.WORLD_BANK_TIERS[country.incomeGroup];
+        if (tier) fillColor = tier.color;
+      } else if (this.activeMetric === 'gdpGrowth') {
+        fillColor = country.gdpGrowthYoY > 4 ? '#34a853' : country.gdpGrowthYoY > 1 ? '#4285f4' : country.gdpGrowthYoY > 0 ? '#fbbc04' : '#ea4335';
+      } else if (this.activeMetric === 'inflation') {
+        fillColor = country.inflationCPI > 15 ? '#ea4335' : country.inflationCPI > 5 ? '#f9ab00' : country.inflationCPI > 2.5 ? '#4285f4' : '#34a853';
+      } else if (this.activeMetric === 'debt') {
+        fillColor = country.debtToGdp > 100 ? '#ea4335' : country.debtToGdp > 60 ? '#f9ab00' : '#34a853';
+      }
+    }
+
+    return {
+      fillColor: fillColor,
+      weight: 1.2,
+      opacity: 1,
+      color: '#ffffff',
+      fillOpacity: fillOpacity,
+      className: 'country-polygon'
+    };
+  }
+
+  createHoverTooltipHtml(country) {
+    const tier = window.WORLD_BANK_TIERS[country.incomeGroup] || { label: 'N/A', color: '#5f6368', bg: '#f1f3f4' };
+    const areaFormatted = Number(country.landArea).toLocaleString() + ' km²';
+    const growthClass = country.gdpGrowthYoY >= 0 ? 'green' : 'red';
+    const growthSign = country.gdpGrowthYoY > 0 ? '+' : '';
+
+    return `
+      <div class="macro-hover-card">
+        <div class="card-header-row">
+          <div class="country-title-group">
+            <span class="flag-emoji">${country.flag}</span>
+            <span class="country-card-name">${country.name}</span>
+          </div>
+          <span class="card-tier-tag" style="background: ${tier.bg}; color: ${tier.color};">${tier.label}</span>
+        </div>
+        <div class="card-grid">
+          <div class="card-metric">
+            <span class="metric-label">Land Area</span>
+            <span class="metric-val">${areaFormatted}</span>
+          </div>
+          <div class="card-metric">
+            <span class="metric-label">Population</span>
+            <span class="metric-val">${country.population}</span>
+          </div>
+          <div class="card-metric">
+            <span class="metric-label">Nominal GDP</span>
+            <span class="metric-val">${country.gdpNominal}</span>
+          </div>
+          <div class="card-metric">
+            <span class="metric-label">GDP Growth YoY</span>
+            <span class="metric-val ${growthClass}">${growthSign}${country.gdpGrowthYoY}%</span>
+          </div>
+          <div class="card-metric">
+            <span class="metric-label">CPI Inflation</span>
+            <span class="metric-val">${country.inflationCPI}%</span>
+          </div>
+          <div class="card-metric">
+            <span class="metric-label">Sovereign Rating</span>
+            <span class="metric-val">${country.rating}</span>
+          </div>
+        </div>
+        <div class="card-footer-hint">Click country to open full intelligence panel</div>
+      </div>
+    `;
+  }
+
+  setLayerMetric(metric) {
+    this.activeMetric = metric;
+    this.renderCountryLayer();
+  }
+
+  applyFilterHighlight(iso3List) {
+    this.highlightedIso3List = iso3List;
+    if (!this.countryGeoLayer) return;
+
+    this.countryGeoLayer.eachLayer((layer) => {
+      const iso = layer.feature.properties.iso_a3;
+      if (iso3List.length === 0) {
+        // Reset
+        layer.setStyle({ fillOpacity: 0.55, strokeOpacity: 1, weight: 1.2, color: '#ffffff' });
+      } else if (iso3List.includes(iso)) {
+        // Highlighted
+        layer.setStyle({
+          fillOpacity: 0.9,
+          color: '#1a73e8',
+          weight: 3
+        });
+      } else {
+        // Dimmed
+        layer.setStyle({
+          fillOpacity: 0.12,
+          color: '#dadce0',
+          weight: 0.8
+        });
+      }
+    });
+  }
+
+  flyToCountry(iso3) {
+    const country = window.COUNTRIES_DATA[iso3];
+    if (country && this.map) {
+      this.map.flyTo(country.coordinates, 5, { duration: 1.2 });
+    }
+  }
+}
+
+window.MapEngine = new MapEngine();
