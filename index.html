@@ -6,7 +6,7 @@
   <title>Macro Lab — Global Economic Intelligence & Event Radar</title>
   <meta name="description" content="Interactive global macroeconomic intelligence map inspired by Google Weather Lab. Explore country depth metrics, live economic calendar shock halos, and conversational AI analysis.">
   
-  <!-- Google Fonts & Mona Sans (Modern SaaS Typography) -->
+  <!-- Google Fonts & Mona Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/mona-sans@5.1.0/index.min.css">
@@ -16,14 +16,14 @@
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
-  <!-- App Styles -->
-  <link rel="stylesheet" href="styles/main.css">
-  <link rel="stylesheet" href="styles/map.css">
-  <link rel="stylesheet" href="styles/components.css">
+  <!-- App Styles (Correction des chemins) -->
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="map.css">
+  <link rel="stylesheet" href="components.css">
 </head>
 <body>
   <div id="app">
-    <!-- 1. Header (Google Weather Lab Style) -->
+    <!-- Header -->
     <header class="macro-header">
       <div class="header-left">
         <div class="logo-icon">
@@ -38,7 +38,6 @@
       </div>
 
       <div class="header-right">
-        <!-- Live Cursor Coordinates Pill -->
         <div class="coord-display">
           <span class="material-symbols-outlined" style="font-size: 14px;">my_location</span>
           <span id="cursor-coords">37.0902, -95.7129</span>
@@ -59,11 +58,11 @@
       </div>
     </header>
 
-    <!-- 2. Main Map Viewport -->
+    <!-- Main Map Viewport -->
     <main class="map-viewport">
       <div id="map"></div>
 
-      <!-- Floating Controls Panel (Top Left) -->
+      <!-- Controls Panel -->
       <div id="controls-panel" class="controls-panel glass-panel">
         <div class="controls-header">
           <div style="display: flex; align-items: center; gap: 8px;">
@@ -116,7 +115,7 @@
         </div>
       </div>
 
-      <!-- Quick Action Buttons (Right Side Floating SaaS Tools) -->
+      <!-- Quick Action Buttons -->
       <div class="map-quick-tools">
         <button id="quick-search-btn" class="quick-tool-btn" title="Recherche Spotlight (Ctrl+K)">
           <span class="material-symbols-outlined">search</span>
@@ -130,19 +129,13 @@
         </button>
       </div>
 
-      <!-- Country Detail Intelligence Drawer (Right Side) -->
+      <!-- Drawers / Modals -->
       <div id="country-drawer" class="country-drawer glass-panel hidden"></div>
-
-      <!-- Events Drawer (Right Side) -->
       <div id="events-drawer" class="events-drawer glass-panel hidden"></div>
-
-      <!-- AI Response Sheet / Modal Overlay -->
       <div id="ai-response-sheet" class="ai-response-sheet glass-panel hidden"></div>
-
-      <!-- Arc Transmission Detail Floating Card (Shown when clicking curved transmission line) -->
       <div id="arc-detail-modal" class="arc-detail-card glass-panel hidden"></div>
 
-      <!-- Floating Legend Panel (Titled "Légende" with Multi-Layer Tabs) -->
+      <!-- Legend Panel -->
       <div id="legend-drawer" class="legend-drawer glass-panel hidden">
         <div class="legend-modal-header">
           <div style="display: flex; align-items: center; gap: 8px;">
@@ -154,7 +147,6 @@
           </button>
         </div>
 
-        <!-- Segmented Navigation Tabs Inside Legend -->
         <div class="legend-nav-tabs">
           <button class="legend-tab-btn active" data-tab="income">World Bank GNI</button>
           <button class="legend-tab-btn" data-tab="heatmap">Choroplèthes</button>
@@ -162,27 +154,22 @@
         </div>
 
         <div class="legend-modal-body">
-          <!-- Tab 1: World Bank GNI Classification -->
           <div id="legend-tab-income" class="legend-tab-content active">
             <div class="legend-section-desc">
               Classification officielle de la Banque Mondiale par Revenu National Brut (RNB/GNI) par habitant (2024–2025).
             </div>
-
-            <!-- Progression Bar with Interactive Thresholds -->
             <div class="legend-progression-bar" title="Survolez les tranches pour voir les détails">
               <div class="progression-segment low" data-tier="Low Income" title="Faible Revenu: ≤ 1 135 $"></div>
               <div class="progression-segment lower-mid" data-tier="Lower-Middle Income" title="Revenu Intermédiaire Inférieur: 1 136 $ - 4 495 $"></div>
               <div class="progression-segment upper-mid" data-tier="Upper-Middle Income" title="Revenu Intermédiaire Supérieur: 4 496 $ – 13 935 $"></div>
               <div class="progression-segment high" data-tier="High Income" title="Revenu Élevé: > 13 935 $"></div>
             </div>
-
             <div class="legend-thresholds-row">
               <span>≤ 1 135 $</span>
               <span>1 136 - 4 495 $</span>
               <span>4 496 – 13 935 $</span>
               <span>> 13 935 $</span>
             </div>
-
             <div class="legend-interactive-tiers">
               <div class="tier-item-row" data-tier="Low Income">
                 <div class="tier-dot-name">
@@ -218,7 +205,6 @@
             </div>
           </div>
 
-          <!-- Tab 2: Choropleth Metric Scales -->
           <div id="legend-tab-heatmap" class="legend-tab-content">
             <div class="legend-metric-group">
               <div class="legend-metric-title">Croissance du PIB (GDP YoY %)</div>
@@ -229,7 +215,6 @@
                 <div class="scale-box" style="background: #34a853;"><span>> 4%</span></div>
               </div>
             </div>
-
             <div class="legend-metric-group" style="margin-top: 14px;">
               <div class="legend-metric-title">Pression Inflationniste (CPI Inflation %)</div>
               <div class="legend-scale-row">
@@ -239,7 +224,6 @@
                 <div class="scale-box" style="background: #ea4335;"><span>> 15%</span></div>
               </div>
             </div>
-
             <div class="legend-metric-group" style="margin-top: 14px;">
               <div class="legend-metric-title">Dette Publique / PIB (%)</div>
               <div class="legend-scale-row">
@@ -250,7 +234,6 @@
             </div>
           </div>
 
-          <!-- Tab 3: Shock Radar & Bézier Vectors -->
           <div id="legend-tab-radar" class="legend-tab-content">
             <div class="radar-legend-item">
               <div class="radar-legend-icon" style="background: #fce8e6; color: #ea4335;">
@@ -261,7 +244,6 @@
                 <span>Cercle concentrique pulsant marquant l'événement et son rayon d'impact géographique immédiat.</span>
               </div>
             </div>
-
             <div class="radar-legend-item" style="margin-top: 10px;">
               <div class="radar-legend-icon" style="background: #e8f0fe; color: #1a73e8;">
                 <span class="material-symbols-outlined" style="font-size: 16px;">conversion_path</span>
@@ -271,7 +253,6 @@
                 <span>Vecteurs géodésiques reliant l'épicentre aux partenaires commerciaux et financiers impactés. Cliquez sur une courbe pour voir l'impact prévu.</span>
               </div>
             </div>
-
             <div class="radar-legend-item" style="margin-top: 10px;">
               <div class="radar-legend-icon" style="background: #e6f4ea; color: #34a853;">
                 <span class="material-symbols-outlined" style="font-size: 16px;">hub</span>
@@ -285,7 +266,7 @@
         </div>
       </div>
 
-      <!-- Spotlight Search Modal (Google Weather Lab / Flight Atlas Style) -->
+      <!-- Spotlight Search -->
       <div id="spotlight-search-modal" class="spotlight-overlay hidden">
         <div class="spotlight-box glass-panel">
           <div class="spotlight-header">
@@ -310,9 +291,8 @@
         </div>
       </div>
 
-      <!-- 3. Bottom AI Chat & Command Bar -->
+      <!-- Bottom AI Chat Bar -->
       <div class="bottom-ai-wrapper">
-        <!-- Suggestion Chips Row -->
         <div class="ai-suggestions-row">
           <div class="suggestion-chip" data-query="Highlight countries with inflation > 6%">
             <span class="material-symbols-outlined" style="font-size: 14px; color: #ea4335;">local_fire_department</span>
@@ -332,7 +312,6 @@
           </div>
         </div>
 
-        <!-- Conversational Input Bar with Context Entity Tag Support -->
         <form id="ai-input-form" class="ai-input-bar">
           <span class="material-symbols-outlined" style="color: #1a73e8; font-size: 22px; margin-right: 8px;">auto_awesome</span>
           <div id="ai-tag-container"></div>
@@ -348,14 +327,14 @@
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-  <!-- Application Scripts -->
-  <script src="scripts/data/countries.js"></script>
-  <script src="scripts/data/events.js"></script>
-  <script src="scripts/data/worldGeo.js"></script>
-  <script src="scripts/mapEngine.js"></script>
-  <script src="scripts/eventRadar.js"></script>
-  <script src="scripts/aiEngine.js"></script>
-  <script src="scripts/uiController.js"></script>
-  <script src="scripts/app.js"></script>
+  <!-- Application Scripts (Correction des chemins) -->
+  <script src="countries.js"></script>
+  <script src="events.js"></script>
+  <script src="worldGeo.js"></script>
+  <script src="mapEngine.js"></script>
+  <script src="eventRadar.js"></script>
+  <script src="aiEngine.js"></script>
+  <script src="uiController.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
