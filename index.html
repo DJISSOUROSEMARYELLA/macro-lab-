@@ -6,9 +6,10 @@
   <title>Macro Lab — Global Economic Intelligence & Event Radar</title>
   <meta name="description" content="Interactive global macroeconomic intelligence map inspired by Google Weather Lab. Explore country depth metrics, live economic calendar shock halos, and conversational AI analysis.">
   
-  <!-- Google Fonts: Google Sans & Material Symbols -->
+  <!-- Google Fonts & Mona Sans (Modern SaaS Typography) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/mona-sans@5.1.0/index.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   
@@ -43,8 +44,8 @@
           <span id="cursor-coords">37.0902, -95.7129</span>
         </div>
         
-        <button id="toggle-controls-btn" class="icon-btn" title="Toggle Layer Controls">
-          <span class="material-symbols-outlined">tune</span>
+        <button id="toggle-controls-btn" class="icon-btn" title="Global Macro Layers & Context">
+          <span class="material-symbols-outlined">public</span>
         </button>
         <button class="icon-btn" title="Share View" onclick="navigator.clipboard.writeText(window.location.href); alert('Dashboard link copied to clipboard!');">
           <span class="material-symbols-outlined">link</span>
@@ -66,8 +67,8 @@
       <div id="controls-panel" class="controls-panel glass-panel">
         <div class="controls-header">
           <div style="display: flex; align-items: center; gap: 8px;">
-            <span class="material-symbols-outlined">layers</span>
-            <span class="controls-title">Macro Layers</span>
+            <span class="material-symbols-outlined" style="color: #1a73e8;">public</span>
+            <span class="controls-title">Global Macro Layers</span>
           </div>
           <button id="close-controls-btn" class="icon-btn">
             <span class="material-symbols-outlined">close</span>
@@ -77,7 +78,7 @@
         <div class="controls-body">
           <div>
             <div class="control-section-title">Choropleth Heatmap</div>
-            <div class="radio-group" style="padding-left: 8px;">
+            <div class="radio-group">
               <label class="radio-item">
                 <input type="radio" name="macro-layer" value="income" checked>
                 <span>World Bank Income Groups</span>
@@ -100,7 +101,7 @@
           <div style="border-top: 1px solid var(--g-border-subtle); padding-top: 12px;">
             <div class="toggle-item">
               <span class="toggle-label">
-                <span class="material-symbols-outlined" style="color: #ea4335;">radar</span>
+                <span class="material-symbols-outlined" style="color: #ea4335;">sensors</span>
                 Economic Shock Radar
               </span>
               <label class="switch">
@@ -115,14 +116,17 @@
         </div>
       </div>
 
-      <!-- Quick Action Buttons (Right Side) -->
+      <!-- Quick Action Buttons (Right Side Floating SaaS Tools) -->
       <div class="map-quick-tools">
-        <button id="quick-search-btn" class="quick-tool-btn" title="Search Country">
+        <button id="quick-search-btn" class="quick-tool-btn" title="Recherche Spotlight (Ctrl+K)">
           <span class="material-symbols-outlined">search</span>
         </button>
-        <button id="quick-radar-btn" class="quick-tool-btn" title="Live Economic Events">
-          <span class="material-symbols-outlined">bolt</span>
+        <button id="quick-radar-btn" class="quick-tool-btn" title="Radar des Chocs Économiques">
+          <span class="material-symbols-outlined" style="color: #ea4335;">crisis_alert</span>
           <span class="badge-counter">5</span>
+        </button>
+        <button id="quick-legend-btn" class="quick-tool-btn" title="Ouvrir la Légende Macro">
+          <span class="material-symbols-outlined" style="color: #1a73e8;">layers</span>
         </button>
       </div>
 
@@ -135,57 +139,174 @@
       <!-- AI Response Sheet / Modal Overlay -->
       <div id="ai-response-sheet" class="ai-response-sheet glass-panel hidden"></div>
 
-      <!-- Retractable Legend (Bottom Right) -->
-      <div id="retractable-legend" class="retractable-legend">
-        <!-- Compact View -->
-        <div id="legend-compact" class="legend-compact-view">
-          <span class="material-symbols-outlined" style="font-size: 16px; color: #1a73e8;">public</span>
-          <span style="font-size: 12px; font-weight: 500;">Legend</span>
-          <div style="display: flex; gap: 4px; align-items: center;">
-            <span style="width: 8px; height: 8px; border-radius: 50%; background: #1a73e8;"></span>
-            <span style="width: 8px; height: 8px; border-radius: 50%; background: #34a853;"></span>
-            <span style="width: 8px; height: 8px; border-radius: 50%; background: #fbbc04;"></span>
-            <span style="width: 8px; height: 8px; border-radius: 50%; background: #ea4335;"></span>
+      <!-- Arc Transmission Detail Floating Card (Shown when clicking curved transmission line) -->
+      <div id="arc-detail-modal" class="arc-detail-card glass-panel hidden"></div>
+
+      <!-- Floating Legend Panel (Titled "Légende" with Multi-Layer Tabs) -->
+      <div id="legend-drawer" class="legend-drawer glass-panel hidden">
+        <div class="legend-modal-header">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="material-symbols-outlined" style="color: #1a73e8;">layers</span>
+            <span class="controls-title">Légende</span>
           </div>
-          <span class="material-symbols-outlined" style="font-size: 16px; color: var(--g-text-secondary);">expand_less</span>
+          <button id="close-legend-btn" class="icon-btn" title="Fermer la légende">
+            <span class="material-symbols-outlined">close</span>
+          </button>
         </div>
 
-        <!-- Expanded View -->
-        <div id="legend-expanded" class="legend-expanded-view" style="display: none;">
-          <div class="legend-title">
-            <span>Income Classification</span>
-            <span class="material-symbols-outlined" style="font-size: 16px;">expand_more</span>
+        <!-- Segmented Navigation Tabs Inside Legend -->
+        <div class="legend-nav-tabs">
+          <button class="legend-tab-btn active" data-tab="income">World Bank GNI</button>
+          <button class="legend-tab-btn" data-tab="heatmap">Choroplèthes</button>
+          <button class="legend-tab-btn" data-tab="radar">Radar & Arcs</button>
+        </div>
+
+        <div class="legend-modal-body">
+          <!-- Tab 1: World Bank GNI Classification -->
+          <div id="legend-tab-income" class="legend-tab-content active">
+            <div class="legend-section-desc">
+              Classification officielle de la Banque Mondiale par Revenu National Brut (RNB/GNI) par habitant (2024–2025).
+            </div>
+
+            <!-- Progression Bar with Interactive Thresholds -->
+            <div class="legend-progression-bar" title="Survolez les tranches pour voir les détails">
+              <div class="progression-segment low" data-tier="Low Income" title="Faible Revenu: ≤ 1 135 $"></div>
+              <div class="progression-segment lower-mid" data-tier="Lower-Middle Income" title="Revenu Intermédiaire Inférieur: 1 136 $ - 4 495 $"></div>
+              <div class="progression-segment upper-mid" data-tier="Upper-Middle Income" title="Revenu Intermédiaire Supérieur: 4 496 $ – 13 935 $"></div>
+              <div class="progression-segment high" data-tier="High Income" title="Revenu Élevé: > 13 935 $"></div>
+            </div>
+
+            <div class="legend-thresholds-row">
+              <span>≤ 1 135 $</span>
+              <span>1 136 - 4 495 $</span>
+              <span>4 496 – 13 935 $</span>
+              <span>> 13 935 $</span>
+            </div>
+
+            <div class="legend-interactive-tiers">
+              <div class="tier-item-row" data-tier="Low Income">
+                <div class="tier-dot-name">
+                  <span class="tier-dot" style="background: #ea4335;"></span>
+                  <span>Low Income (Faible Revenu)</span>
+                </div>
+                <span class="tier-threshold-badge">≤ 1 135 $</span>
+              </div>
+              <div class="tier-item-row" data-tier="Lower-Middle Income">
+                <div class="tier-dot-name">
+                  <span class="tier-dot" style="background: #fbbc04;"></span>
+                  <span>Lower-Middle (Intermédiaire Inférieur)</span>
+                </div>
+                <span class="tier-threshold-badge">1 136 - 4 495 $</span>
+              </div>
+              <div class="tier-item-row" data-tier="Upper-Middle Income">
+                <div class="tier-dot-name">
+                  <span class="tier-dot" style="background: #34a853;"></span>
+                  <span>Upper-Middle (Intermédiaire Supérieur)</span>
+                </div>
+                <span class="tier-threshold-badge">4 496 – 13 935 $</span>
+              </div>
+              <div class="tier-item-row" data-tier="High Income">
+                <div class="tier-dot-name">
+                  <span class="tier-dot" style="background: #1a73e8;"></span>
+                  <span>High Income (Revenu Élevé)</span>
+                </div>
+                <span class="tier-threshold-badge">> 13 935 $</span>
+              </div>
+            </div>
+            <div style="font-size: 11px; color: var(--g-text-tertiary); margin-top: 8px;">
+              Cliquez sur une tranche pour filtrer les pays correspondants sur le globe.
+            </div>
           </div>
-          <div class="income-tier-list">
-            <div class="tier-legend-row">
-              <div class="tier-dot-label">
-                <span class="tier-color-dot" style="background: #1a73e8;"></span>
-                <span>High Income</span>
+
+          <!-- Tab 2: Choropleth Metric Scales -->
+          <div id="legend-tab-heatmap" class="legend-tab-content">
+            <div class="legend-metric-group">
+              <div class="legend-metric-title">Croissance du PIB (GDP YoY %)</div>
+              <div class="legend-scale-row">
+                <div class="scale-box" style="background: #ea4335;"><span>< 0%</span></div>
+                <div class="scale-box" style="background: #fbbc04;"><span>0 - 1%</span></div>
+                <div class="scale-box" style="background: #4285f4;"><span>1 - 4%</span></div>
+                <div class="scale-box" style="background: #34a853;"><span>> 4%</span></div>
               </div>
-              <strong style="color: var(--g-text-secondary);">&gt; $13,935</strong>
             </div>
-            <div class="tier-legend-row">
-              <div class="tier-dot-label">
-                <span class="tier-color-dot" style="background: #34a853;"></span>
-                <span>Upper-Middle</span>
+
+            <div class="legend-metric-group" style="margin-top: 14px;">
+              <div class="legend-metric-title">Pression Inflationniste (CPI Inflation %)</div>
+              <div class="legend-scale-row">
+                <div class="scale-box" style="background: #34a853;"><span>< 2.5%</span></div>
+                <div class="scale-box" style="background: #4285f4;"><span>2.5 - 5%</span></div>
+                <div class="scale-box" style="background: #f9ab00;"><span>5 - 15%</span></div>
+                <div class="scale-box" style="background: #ea4335;"><span>> 15%</span></div>
               </div>
-              <strong style="color: var(--g-text-secondary);">$4,496 - $13.9k</strong>
             </div>
-            <div class="tier-legend-row">
-              <div class="tier-dot-label">
-                <span class="tier-color-dot" style="background: #fbbc04;"></span>
-                <span>Lower-Middle</span>
+
+            <div class="legend-metric-group" style="margin-top: 14px;">
+              <div class="legend-metric-title">Dette Publique / PIB (%)</div>
+              <div class="legend-scale-row">
+                <div class="scale-box" style="background: #34a853;"><span>< 60%</span></div>
+                <div class="scale-box" style="background: #f9ab00;"><span>60 - 90%</span></div>
+                <div class="scale-box" style="background: #ea4335;"><span>> 90%</span></div>
               </div>
-              <strong style="color: var(--g-text-secondary);">$1,136 - $4.4k</strong>
-            </div>
-            <div class="tier-legend-row">
-              <div class="tier-dot-label">
-                <span class="tier-color-dot" style="background: #ea4335;"></span>
-                <span>Low Income</span>
-              </div>
-              <strong style="color: var(--g-text-secondary);">&le; $1,135</strong>
             </div>
           </div>
+
+          <!-- Tab 3: Shock Radar & Bézier Vectors -->
+          <div id="legend-tab-radar" class="legend-tab-content">
+            <div class="radar-legend-item">
+              <div class="radar-legend-icon" style="background: #fce8e6; color: #ea4335;">
+                <span class="material-symbols-outlined" style="font-size: 16px;">crisis_alert</span>
+              </div>
+              <div class="radar-legend-text">
+                <strong>Épicentre du Choc Macro</strong>
+                <span>Cercle concentrique pulsant marquant l'événement et son rayon d'impact géographique immédiat.</span>
+              </div>
+            </div>
+
+            <div class="radar-legend-item" style="margin-top: 10px;">
+              <div class="radar-legend-icon" style="background: #e8f0fe; color: #1a73e8;">
+                <span class="material-symbols-outlined" style="font-size: 16px;">conversion_path</span>
+              </div>
+              <div class="radar-legend-text">
+                <strong>Courbes de Transmission (Bézier)</strong>
+                <span>Vecteurs géodésiques reliant l'épicentre aux partenaires commerciaux et financiers impactés. Cliquez sur une courbe pour voir l'impact prévu.</span>
+              </div>
+            </div>
+
+            <div class="radar-legend-item" style="margin-top: 10px;">
+              <div class="radar-legend-icon" style="background: #e6f4ea; color: #34a853;">
+                <span class="material-symbols-outlined" style="font-size: 16px;">hub</span>
+              </div>
+              <div class="radar-legend-text">
+                <strong>Canaux de Transmission</strong>
+                <span>Spillovers de taux (Yield spreads), chaînes de valeur (Tech inputs), chocs FX et liquidité bancaire.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Spotlight Search Modal (Google Weather Lab / Flight Atlas Style) -->
+      <div id="spotlight-search-modal" class="spotlight-overlay hidden">
+        <div class="spotlight-box glass-panel">
+          <div class="spotlight-header">
+            <span class="material-symbols-outlined" style="color: #1a73e8; font-size: 22px;">search</span>
+            <input type="text" id="spotlight-search-input" placeholder="Rechercher un pays, code ISO ou région (ex: Canada, KOR, Pologne)..." autocomplete="off">
+            <span class="spotlight-kbd-hint">ESC</span>
+            <button id="close-spotlight-btn" class="icon-btn">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+          <div class="spotlight-quick-filters">
+            <button class="spotlight-filter-pill active" data-filter="all">Tous (176)</button>
+            <button class="spotlight-filter-pill" data-filter="high-income">High Income</button>
+            <button class="spotlight-filter-pill" data-filter="high-growth">Croissance &gt; 4%</button>
+            <button class="spotlight-filter-pill" data-filter="high-inflation">Inflation &gt; 5%</button>
+            <button class="spotlight-filter-pill" data-filter="Europe">Europe</button>
+            <button class="spotlight-filter-pill" data-filter="Asia">Asie</button>
+            <button class="spotlight-filter-pill" data-filter="Africa">Afrique</button>
+            <button class="spotlight-filter-pill" data-filter="Americas">Amériques</button>
+          </div>
+          <div id="spotlight-results-list" class="spotlight-results-list"></div>
         </div>
       </div>
 

@@ -104,23 +104,50 @@ class EventRadar {
 
     this.activeHalos.push(haloOuter, haloInner);
 
-    // 2. Vector Propagation Lines to trade/economic partners
+    // 2. Vector Curved Propagation Arcs to trade/economic partners (Bézier curves)
     if (evt.propagationTargets) {
       evt.propagationTargets.forEach((target) => {
-        const polyline = L.polyline([evt.coordinates, target.coords], {
+        const curvePoints = this.computeBezierPoints(evt.coordinates, target.coords);
+        
+        const polyline = L.polyline(curvePoints, {
           color: evt.haloColor,
-          weight: target.intensity === 'High' ? 2.5 : 1.5,
-          opacity: 0.75,
-          dashArray: '6, 8'
+          weight: target.intensity === 'High' ? 3 : 2,
+          opacity: 0.85,
+          dashArray: '8, 8',
+          className: 'bezier-shock-arc'
         }).addTo(this.map);
 
-        // Arrow Decorator / Target Pulse Point
+        // Tooltip on arc hover
+        polyline.bindTooltip(`
+          <div style="font-family: var(--g-font-family); font-size: 12px; padding: 4px;">
+            <strong>${evt.countryName} ➔ ${target.name}</strong><br>
+            <span style="color: var(--g-text-secondary); font-size: 11px;">Canal: ${target.relation}</span><br>
+            <span style="color: #1a73e8; font-size: 10px; font-weight: 600;">Cliquez pour analyser la transmission</span>
+          </div>
+        `, {
+          sticky: true,
+          className: 'leaflet-tooltip-macro'
+        });
+
+        polyline.on('click', () => {
+          window.UIController.showArcDetail(evt, target);
+        });
+
+        polyline.on('mouseover', () => {
+          polyline.setStyle({ weight: 4.5, opacity: 1 });
+        });
+
+        polyline.on('mouseout', () => {
+          polyline.setStyle({ weight: target.intensity === 'High' ? 3 : 2, opacity: 0.85 });
+        });
+
+        // Target Pulse Marker at destination
         const targetMarker = L.circleMarker(target.coords, {
-          radius: 5,
+          radius: 5.5,
           color: evt.haloColor,
           fillColor: '#ffffff',
           fillOpacity: 1,
-          weight: 2
+          weight: 2.5
         }).addTo(this.map);
 
         targetMarker.bindTooltip(`<b>${target.name}</b><br>${target.relation}`, {
@@ -128,9 +155,45 @@ class EventRadar {
           direction: 'top'
         });
 
+        targetMarker.on('click', () => {
+          window.UIController.showArcDetail(evt, target);
+        });
+
         this.propagationLines.push(polyline, targetMarker);
       });
     }
+  }
+
+  computeBezierPoints(start, end, curvature = 0.22, numPoints = 28) {
+    const lat1 = start[0], lng1 = start[1];
+    const lat2 = end[0], lng2 = end[1];
+
+    let adjLng2 = lng2;
+    if (adjLng2 - lng1 > 180) adjLng2 -= 360;
+    else if (lng1 - adjLng2 > 180) adjLng2 += 360;
+
+    const midLat = (lat1 + lat2) / 2;
+    const midLng = (lng1 + adjLng2) / 2;
+
+    const dLat = lat2 - lat1;
+    const dLng = adjLng2 - lng1;
+
+    // Curved normal vector offset
+    const normLat = -dLng * curvature;
+    const normLng = dLat * curvature;
+
+    const ctrlLat = midLat + normLat;
+    const ctrlLng = midLng + normLng;
+
+    const points = [];
+    for (let i = 0; i <= numPoints; i++) {
+      const t = i / numPoints;
+      const invT = 1 - t;
+      const lat = invT * invT * lat1 + 2 * invT * t * ctrlLat + t * t * lat2;
+      let lng = invT * invT * lng1 + 2 * invT * t * ctrlLng + t * t * adjLng2;
+      points.push([lat, lng]);
+    }
+    return points;
   }
 
   removeEventHalo() {

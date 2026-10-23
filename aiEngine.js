@@ -100,6 +100,12 @@ class AIEngine {
         `• **Spillover Channels**: Primary propagation lines target **${evt.propagationTargets.map(t => t.name).join(', ')}**.\n` +
         `• **AI Synthesis**: ${evt.aiAnalysis}`;
     }
+    else if (this.currentContextEntity && this.currentContextEntity.type === 'corridor') {
+      responseText = `**Analyse de Transmission Géodésique: ${this.currentContextEntity.name}**\n\n` +
+        `• **Mécanisme de propagation** : Le canal de transmission s'appuie sur les flux d'échanges bilatéraux, les spreads de taux souverains et l'arbitrage de devises (FX carry trade).\n` +
+        `• **Impact macroéconomique anticipé** : Répercussion sur la prime de risque locale, ajustement des coûts d'importation et réallocation des portefeuilles obligataires transfrontaliers.\n` +
+        `• **Recommandation stratégique** : Surveiller le niveau des réserves de change et l'écart de rendement avec les obligations souveraines à 10 ans pour amortir les tensions de liquidité.`;
+    }
     // 3. Fallback General AI Explanation
     else {
       responseText = `**Macro Lab Intelligence Analysis**\n\n` +
